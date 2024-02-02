@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Betchess",
+    "version": "1.0",
+    "description": "A Chrome extension for betting on chess with cryptocurrency.",
+    "action": {
+      "default_popup": "popup/popup.html"
+    }
+  }
+  
