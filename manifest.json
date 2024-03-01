@@ -9,6 +9,9 @@
     },
     "description": "A Chrome extension for betting on chess with cryptocurrency.",
     "action": {
+      "default_icon" : {
+        "64" : "public/assets/logo-bet.png"
+      },
       "default_popup": "public/popup.html"
     },
     "content_scripts": [
