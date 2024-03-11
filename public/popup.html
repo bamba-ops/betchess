@@ -18,8 +18,10 @@
         <img src="./assets/logo-bet.png" alt="Logo" width="64" height="64">
       </a>
       <form class="d-flex" role="search">
-        <label class="me-2 input-group-text">$0.01</label>
-        <button class="btn btn-sm btn-outline-secondary" type="submit"><svg xmlns="http://www.w3.org/2000/svg"
+        <label id="balance" class="me-2 input-group-text"><div id="spinner" style="display: block;" class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div></label>
+        <button class="btn btn-sm btn-outline-secondary" type="button"><svg xmlns="http://www.w3.org/2000/svg"
             width="24" height="24" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
             <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
             <path
@@ -79,6 +81,7 @@
 
 
 </body>
+<script src="../src/home/app.js"></script>
 <script src="../lib/bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 
 </html>
