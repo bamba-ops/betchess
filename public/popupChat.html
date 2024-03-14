@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="../lib/bootstrap-5.3.3-dist/css/bootstrap.css">
+    <!-- popupMeeting.html -->
+    <script src="./js/popupChat.js"></script>
+    <title>Betchess</title>
+</head>
+
+<body data-bs-theme="dark">
+
+    <div class="container d-flex flex-column vh-100">
+        <div class="overflow-auto mb-3 mt-3 text-break" style="height: 90%;">
+            <!-- Your chat messages here -->
+
+            <!-- Output other user -->
+            <div class="row">
+                <div class="d-flex align-items-start flex-column">
+                    <p class="p-2 border border-secondary-subtle rounded-4">
+                        hey
+                    </p>
+                </div>
+            </div>
+
+             <!-- Output server -->
+             <!--  Header information -->
+            <div class="row">
+                <div class="d-flex align-items-center flex-column">
+                    <p class="p-2 border border-secondary-subtle rounded-4">
+                        You create the game !
+                    </p>
+                </div>
+            </div>
+             <!--  Body information -->
+            <div class="row">
+                <div class="d-flex align-items-center flex-column">
+                    <p class="p-2 border border-secondary-subtle rounded-4 text-body-secondary">
+                        You need to create a link to the challenge. After creating, pass the link to the chat, so the other player can join. Example of a link to pass : <a href="https://link.chess.com/play/f8sPVL" class="text-reset">https://link.chess.com/play/f8sPVL</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex align-items-center flex-column">
+                    <p class="p-2 border border-secondary-subtle rounded-4 text-body-secondary">
+                        5:00
+                    </p>
+                </div>
+            </div>
+
+            <!-- Output our user -->
+            <div class="row">
+                <div class="d-flex align-items-end flex-column">
+                    <p class="p-2 border border-secondary-subtle rounded-4">
+                       hey
+                    </p>
+                </div>
+            </div>           
+        </div>
+        <div class="mt-auto">
+            <!-- Your input field here -->
+
+            <div class="input-group mb-3">
+
+                <input type="text" class="form-control" placeholder="Message" aria-label="Message"
+                    aria-describedby="basic-addon1">
+                <button class="input-group-text btn btn-outline-secondary btn-sm" id="basic-addon1"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                        <path
+                            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                    </svg></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="../lib/bootstrap-5.3.3-dist/js/bootstrap.js"></script>
+<script src="../lib/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

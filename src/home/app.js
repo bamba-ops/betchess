@@ -1,12 +1,13 @@
 class Model {
 
     async getBalanceUser() {
-        return fetch('https://65ee680408706c584d9b5644.mockapi.io/api/v1/User/1')
-            .then(response => response.json())
-            .then(data => {
-                this.userData = data;
-                return data;
-            });
+        return {id: '1', balance: '5.00'}
+        // return fetch('https://65ee680408706c584d9b5644.mockapi.io/api/v1/User/1')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         this.userData = data;
+        //         return data;
+        //     });
     }
 }
 
@@ -42,6 +43,7 @@ class View {
 document.addEventListener("DOMContentLoaded", async () => {
     
     const app = new Presenter(new Model(), new View())
+
     await app.handleBalance()
 
 }); 
