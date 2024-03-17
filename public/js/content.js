@@ -6,7 +6,7 @@ function sendMessageToBackground(message) {
     });
 }
 
-// sendMessageToBackground({greeting: 'hello'});
+sendMessageToBackground({greeting: 'hello'});
 
 
 // const url = "https://www.chess.com/play/online"

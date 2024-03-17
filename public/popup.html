@@ -90,6 +90,9 @@
 
   <!-- NAV END -->
 
+  <div id="warning" class="fixed-top alert alert-warning alert-dismissible m-3 fade" role="alert">
+    <strong>BROKI ALERT !</strong> <span id="warningMessage">  </span>
+  </div>
 
 
   <!-- CARD START -->
@@ -105,26 +108,44 @@
       </p>
       </p>
     </div>
-    <form action="popupMeeting.html" class="get">
       <div class="row mt-5">
 
         <div class="col">
-          <button type="submit" class="btn btn-md btn-outline-secondary"><a>$5</a></button>
+          <button id="btn5" type="button" class="btn btn-md btn-outline-secondary" data-bs-balance="5.00">$5</button>
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-md btn-outline-secondary">$10</button>
+          <button id="btn10" type="button" class="btn btn-md btn-outline-secondary"  data-bs-balance="10.00">$10</button>
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-md btn-outline-secondary">$20</button>
+          <button id="btn20" type="button" class="btn btn-md btn-outline-secondary" data-bs-balance="20.00">$20</button>
         </div>
 
       </div>
-    </form>
   </div>
-
-
-
   <!-- CARD END -->
+
+  <!-- MODAL START -->
+  <div class="modal fade" id="waiting" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered text-center">
+      <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-3">
+                <p>
+                    We searching for a game...
+                </p> 
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL END -->
 
 
 

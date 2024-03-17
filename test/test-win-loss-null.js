@@ -32,6 +32,9 @@ function myFunction() {
      * White
      * You Won!
      * Game Aborted
+     * Vous avez gagné !
+     * Les Noirs ont gagné
+     * Les Blancs ont gagné
      * 
      * board-modal-header-component game-over-header-component game-over-header-whiteWon game-over-header-isPlaying
      * game-over-modal-content

@@ -4,6 +4,7 @@
     "version": "1.0",
     "permissions": ["activeTab", "scripting"] ,
     "host_permissions": ["*://www.chess.com/*"],
+    
     "background": {
       "service_worker": "public/js/background.js"
     },
