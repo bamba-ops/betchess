@@ -1,13 +1,20 @@
 class Model {
 
     async getBalanceUser() {
-        return { id: '1', balance: '5.00' }
-        // return fetch('https://65ee680408706c584d9b5644.mockapi.io/api/v1/User/1')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         this.userData = data;
-        //         return data;
-        //     });
+        // return { id: '1', balance: '5.00' }
+        return fetch('http://localhost:8787/users/1')
+            .then(response => response.json())
+            .then(data => {
+                return data;
+            });
+    }
+    
+    async getIsBalanceEnough(choice) {
+        return fetch(`http://localhost:8787/users/1/isBalanceEnough?balance=${choice}`)
+        .then(response => response.json())
+        .then(data => {
+                return data;
+            });
     }
 
 }
@@ -26,28 +33,28 @@ class Presenter {
 
     async handleBtnChoice(choice) {
         try {
-            const data = await this.handleGetBalanceUser()
-            if (choice == 5.00 && parseFloat(data.balance) >= 5.00) {
+            const data = await this.handleIsBalanceEnough(choice)
+            if(data.isBalanceEnough){
                 this.view.showModalWaiting()
-            } else if (choice == 10.00 && parseFloat(data.balance) >= 10.00) {
-                this.view.showModalWaiting()
-            } else if (choice == 20 && parseFloat(data.balance) >= 20.00) {
-                this.view.showModalWaiting()
-            } else { 
+            } else {
                 this.view.hideModalWaiting()
-                this.handleWarningInsuffisantFunds()
+                this.handleWarningInsuffisantFunds(data)
             }
         } catch (e) {
             console.log(e)
         }
     }
 
-    handleWarningInsuffisantFunds(){
-        this.view.showWarning({message: "Insuffisent funds. Please top up your balance !"})
+    handleWarningInsuffisantFunds(data){
+        this.view.showWarning(data)
     }
 
     async handleGetBalanceUser() {
         return await this.model.getBalanceUser()
+    }
+
+    async handleIsBalanceEnough(choice) {
+        return await this.model.getIsBalanceEnough(choice)
     }
 
 }
