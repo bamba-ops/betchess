@@ -4,6 +4,7 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
+    "generate-unique-id": "^2.0.3",
     "hono": "^4.1.3"
   },
   "devDependencies": {

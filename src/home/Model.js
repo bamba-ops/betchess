@@ -1,8 +1,10 @@
 export default class Model {
+    
+    api_url = 'http://localhost:42085'
 
     async getBalanceUser() {
         // return { id: '1', balance: '5.00' }
-        return fetch('http://localhost:8787/users/1')
+        return fetch(`${this.api_url}/users/1`)
             .then(response => response.json())
             .then(data => {
                 return data;
@@ -10,7 +12,7 @@ export default class Model {
     }
 
     async getIsBalanceEnough(choice) {
-        return fetch(`http://localhost:8787/users/1/isBalanceEnough?balance=${choice}`)
+        return fetch(`${this.api_url}/users/1/connect-request?balance=${choice}`)
             .then(response => response.json())
             .then(data => {
                 return data;
