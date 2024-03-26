@@ -1,6 +1,6 @@
 export default class Model {
     
-    api_url = 'http://localhost:42085'
+    api_url = 'http://localhost:39361'
 
     async getBalanceUser() {
         // return { id: '1', balance: '5.00' }

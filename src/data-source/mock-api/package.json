@@ -5,10 +5,12 @@
   },
   "dependencies": {
     "generate-unique-id": "^2.0.3",
-    "hono": "^4.1.3"
+    "hono": "^4.1.3",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
+    "@types/ws": "^8.5.10",
     "wrangler": "^3.32.0"
   }
 }
