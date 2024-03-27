@@ -24,6 +24,10 @@ export default class Presenter {
 
     }
 
+    async handleUsernamePrint(){
+        return await this.model.getUserData()
+    }
+
 
     handleWarningInsuffisantFunds(data) {
         this.view.showWarning(data)

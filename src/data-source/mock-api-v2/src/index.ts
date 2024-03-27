@@ -11,6 +11,7 @@
 /**
  * Associate bindings declared in wrangler.toml with the TypeScript type system
  */
+
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
 	// MY_KV_NAMESPACE: KVNamespace;
@@ -31,8 +32,8 @@ export interface Env {
 interface User {
 	userId: string;
 	username: string;
-	webSocket: WebSocket;
-	isConnected: boolean;
+	webSocket: WebSocket | null;
+	isConnected: boolean | null;
 }
 
 interface GameSession {
@@ -59,18 +60,19 @@ export class MyDurableObject {
 	 * @param env - The interface to reference bindings declared in wrangler.toml
 	 */
 	state: DurableObjectState;
-	currentlyConnectedWebSockets: number;
 	db: InMemoryDB;
-	isMatchFoundInterval: any;
+	users: Array<User>;
 
 	constructor(state: DurableObjectState, env: Env) {
 		this.state = state
-		this.currentlyConnectedWebSockets = 0;
 		this.db = {
 			users: new Map(),
 			gameSessions: new Map()
 		}
-		this.isMatchFoundInterval
+		this.users = [{userId: '1', username: 'many1', isConnected: null, webSocket: null}, {userId: '2', username: 'many2', isConnected: null, webSocket: null}]
+		this.users.forEach((user) => {
+			this.db.users.set(user.userId, user)
+		})
 	}
 
 	/**
@@ -90,7 +92,6 @@ export class MyDurableObject {
 			const webSocketPair = new WebSocketPair();
 			const [client, server] = Object.values(webSocketPair);
 
-			this.currentlyConnectedWebSockets += 1
 
 			this.state.acceptWebSocket(server)
 
@@ -101,11 +102,6 @@ export class MyDurableObject {
 				webSocket: client,
 			});
 
-		} else if (request.url.endsWith('/getCurrentConnections')) {
-			if (this.currentlyConnectedWebSockets == 1) {
-				return new Response(`There is ${this.currentlyConnectedWebSockets} WebSocket client connected to this Durable Object instance.`);
-			}
-			return new Response(`There are ${this.currentlyConnectedWebSockets} WebSocket clients connected to this Durable Object instance.`);
 		}
 		return new Response(`
 This Durable Object supports the following endpoints:
@@ -123,16 +119,10 @@ This Durable Object supports the following endpoints:
 		const { userId, username, isConnected } = msg.payload
 		switch (msg.type) {
 			case 'register':
-
-				if (this.isUserRegister(userId)) {
-					console.log('User exist !')
-				} else {
-					this.setUser(userId, username, isConnected, ws, msg)
-				}
+				this.setUser(userId, username, isConnected, ws, msg)
 				break;
 			case 'create':
 				const { price } = msg.payload
-				console.log(userId)
 				if (this.isUserRegister(userId) && !this.isUserCreateGameSession(userId)) {
 					this.setGameSession(userId, ws, msg, price)
 				} else {
@@ -140,8 +130,8 @@ This Durable Object supports the following endpoints:
 				}
 				break;
 			case 'join':
+				console.log('Request Join')
 				const { gameId } = msg.payload
-				console.log(gameId)
 				if (this.db.gameSessions.get(gameId)) {
 					this.setJoinerUserId(gameId, msg, ws)
 				} else {
@@ -157,7 +147,6 @@ This Durable Object supports the following endpoints:
 	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
 		// If the client closes the connection, the runtime will invoke the webSocketClose() handler.
 		console.log('Disconnect !')
-		clearInterval(this.isMatchFoundInterval)
 		ws.close(code, "Durable Object is closing WebSocket");
 	}
 
@@ -207,9 +196,6 @@ This Durable Object supports the following endpoints:
 
 			this.db.gameSessions.set(gameId, gameSession)
 
-			console.log(this.db.gameSessions)
-			console.log(this.db.users)
-
 			const data = {
 				type: msg.type,
 				payload: {
@@ -234,24 +220,17 @@ This Durable Object supports the following endpoints:
 
 	setJoinerUserId(gameId: string, msg: any, ws: WebSocket) {
 		try {
-			this.isMatchFoundInterval = setInterval(() => {
-			var isMatchFound = false
 			const gamesession = this.db.gameSessions.get(gameId)
-			if (gamesession) {
-				if (gamesession.joinerUserId == null && gamesession.status == 'waiting') {
-					this.db.gameSessions.forEach((_gamesession) => {
-						if(_gamesession.joinerUserId == null && _gamesession.status == 'waiting' && !isMatchFound && gamesession.gameId != _gamesession.gameId){
-							gamesession.joinerUserId = _gamesession.creatorUserId
-							this.db.gameSessions.delete(_gamesession.gameId)
-							gamesession.status = 'progress'
-							isMatchFound = true;
-							console.log('Found !')
-						}
-					})
-				} 
-				console.log(this.db.gameSessions)
-				console.log(isMatchFound)
-				this.isMatchFound(isMatchFound, gameId, ws)
+			if (gamesession && gamesession.joinerUserId == null && gamesession.status == 'waiting') {
+				this.db.gameSessions.forEach((_gamesession) => {
+					if (_gamesession.joinerUserId == null && _gamesession.status == 'waiting' && gamesession.gameId != _gamesession.gameId) {
+						gamesession.joinerUserId = _gamesession.creatorUserId
+						this.db.gameSessions.delete(_gamesession.gameId)
+						gamesession.status = 'progress'
+						console.log('Found !')
+						this.isMatchFound(gameId, ws)
+					}
+				})
 			} else {
 				console.log('Game Session Not Found !')
 				const data = {
@@ -262,11 +241,8 @@ This Durable Object supports the following endpoints:
 					}
 				}
 				ws.send(JSON.stringify(data))
-				clearInterval(this.isMatchFoundInterval)
 			}
-			}, 10000)
 		} catch (e) {
-			clearInterval(this.isMatchFoundInterval)
 			console.log(e)
 			const data = {
 				type: msg.type,
@@ -279,49 +255,40 @@ This Durable Object supports the following endpoints:
 		}
 	}
 
-	isMatchFound(isMatchFound: boolean, gameId: string, ws: WebSocket){
-		if(isMatchFound){
-			clearInterval(this.isMatchFoundInterval)
-			const creator_data = {
-				type: 'join',
-				payload: {
-					isValid: true,
-					gameId: gameId,
-					username_opponent: this.getUsername(this.db.gameSessions.get(gameId)?.joinerUserId),
-					oppenentId: this.db.gameSessions.get(gameId)?.joinerUserId
-				}
-			}
+	isMatchFound(gameId: string, ws: WebSocket) {
 
-			const joiner_data = {
-				type: 'join',
-				payload: {
-					isValid: true,
-					gameId: gameId,
-					username_opponent: this.getUsername(this.db.gameSessions.get(gameId)?.creatorUserId),
-					oppenentId: this.db.gameSessions.get(gameId)?.creatorUserId
-				}
+		const creator_data = {
+			type: 'join',
+			payload: {
+				isValid: true,
+				gameId: gameId,
+				username_opponent: this.getUsername(this.db.gameSessions.get(gameId)?.joinerUserId),
+				oppenentId: this.db.gameSessions.get(gameId)?.joinerUserId
 			}
-			
-			this.getWs(this.db.gameSessions.get(gameId)?.creatorUserId)?.send(JSON.stringify(creator_data))
-			this.getWs(this.db.gameSessions.get(gameId)?.joinerUserId)?.send(JSON.stringify(joiner_data))
-		} else {
-			console.log('Error 004: Please contact support.')
-				const data = {
-					type: 'join',
-					payload: {
-						isValid: false,
-						error: 'Error 004: Please contact support.'
-					}
-				}
-			ws.send(JSON.stringify(data))
 		}
+
+		const joiner_data = {
+			type: 'join',
+			payload: {
+				isValid: true,
+				gameId: gameId,
+				username_opponent: this.getUsername(this.db.gameSessions.get(gameId)?.creatorUserId),
+				oppenentId: this.db.gameSessions.get(gameId)?.creatorUserId
+			}
+		}
+
+		console.log(this.db.gameSessions)
+		console.log(this.db.users)
+		this.getWs(this.db.gameSessions.get(gameId)?.creatorUserId)?.send(JSON.stringify(creator_data))
+		this.getWs(this.db.gameSessions.get(gameId)?.joinerUserId)?.send(JSON.stringify(joiner_data))
+
 	}
 
-	getUsername(userId: any){
+	getUsername(userId: any) {
 		return this.db.users.get(userId)?.username
 	}
 
-	getWs(userId: any){
+	getWs(userId: any) {
 		return this.db.users.get(userId)?.webSocket
 	}
 
@@ -370,5 +337,5 @@ export default {
 		let response = await stub.fetch(request);
 
 		return response;
-	},
+	}, 
 };

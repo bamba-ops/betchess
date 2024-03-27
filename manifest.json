@@ -2,11 +2,12 @@
     "manifest_version": 3,
     "name": "Betchess",
     "version": "1.0",
-    "permissions": ["activeTab", "scripting"] ,
+    "permissions": ["activeTab", "scripting", "offscreen"] ,
     "host_permissions": ["*://www.chess.com/*"],
     
     "background": {
-      "service_worker": "public/js/background.js"
+      "service_worker": "public/js/background.js",
+      "type": "module"
     },
     "description": "A Chrome extension for betting on chess with cryptocurrency.",
     "action": {
